@@ -332,12 +332,9 @@ impl Element {
     /// assert_eq!(elem.has_ns(NSChoice::Any), true);
     /// ```
     pub fn has_ns<'a, NS: Into<NSChoice<'a>>>(&self, namespace: NS) -> bool {
-        self.namespace.is_some()
-            && self
-                .namespace
-                .as_ref()
-                .map(|ns| namespace.into().compare(ns))
-                .unwrap()
+        let ns = namespace.into();
+        (self.namespace.is_none() && ns == NSChoice::Any)
+            || self.namespace.as_ref().map(|e| ns.compare(e)).unwrap()
     }
 
     /// Parse a document from a `BufRead`.
